@@ -9,10 +9,17 @@ if(isset($_POST['submit'])) {
 	$username=$_POST['username'];
 	$password=$_POST['password'];
 	
-	/* Check login  correctness*/
-	$query="SELECT * FROM users WHERE username='$username' AND password='$password' ";
-	$result=mysqli_query($conn , $query);
-	//$rows=1;
+	/* Prepare statement */
+	$stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE username=? AND password=?");
+
+	/* Bind parameters */
+	mysqli_stmt_bind_param($stmt, "ss", $username, $password);
+
+	/* Execute query */
+	mysqli_stmt_execute($stmt);
+
+	/* Get result */
+	$result = mysqli_stmt_get_result($stmt);
 
 	/* query failed */
 	if($result==FALSE) {
@@ -52,6 +59,3 @@ if(isset($_POST['submit'])) {
 				header("location:../index.php");
 			}
 }
-
-
-?>
